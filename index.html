@@ -1,0 +1,2959 @@
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#03060c">
+<meta name="description" content="LUNAR-01 Mission Control">
+<title>LUNAR-01 // MISSION CONTROL</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #03060c;
+    --bg-2: #07101c;
+    --panel: rgba(8, 18, 31, 0.72);
+    --panel-hover: rgba(12, 28, 46, 0.86);
+    --border: rgba(115, 170, 220, 0.14);
+    --border-bright: rgba(83, 181, 255, 0.34);
+    --text: #edf7ff;
+    --muted: #7890a6;
+    --blue: #48b9ff;
+    --cyan: #52f4ff;
+    --green: #48e39a;
+    --yellow: #ffd166;
+    --red: #ff5577;
+    --purple: #9b7cff;
+    --shadow: 0 25px 80px rgba(0, 0, 0, 0.45);
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, Arial, sans-serif;
+    overflow-x: hidden;
+}
+
+button {
+    font: inherit;
+}
+
+button,
+a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* =========================================================
+   BACKGROUND
+========================================================= */
+
+.background {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: -10;
+    background:
+        radial-gradient(
+            circle at 50% 0%,
+            rgba(35, 106, 165, 0.14),
+            transparent 38%
+        ),
+        radial-gradient(
+            circle at 90% 70%,
+            rgba(87, 60, 180, 0.07),
+            transparent 30%
+        ),
+        #03060c;
+}
+
+.grid-background {
+    position: absolute;
+    inset: 0;
+    opacity: 0.12;
+    background-image:
+        linear-gradient(rgba(80, 150, 210, 0.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(80, 150, 210, 0.12) 1px, transparent 1px);
+    background-size: 70px 70px;
+    mask-image: linear-gradient(to bottom, black, transparent 90%);
+}
+
+.background-glow {
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.12;
+}
+
+.glow-one {
+    top: -250px;
+    left: 15%;
+    background: #008cff;
+}
+
+.glow-two {
+    right: -250px;
+    bottom: 5%;
+    background: #714bff;
+}
+
+/* =========================================================
+   STARS
+========================================================= */
+
+.stars {
+    position: absolute;
+    inset: 0;
+    background-repeat: repeat;
+    animation: starsMove linear infinite;
+}
+
+.stars-one {
+    opacity: 0.55;
+    background-image:
+        radial-gradient(circle, white 1px, transparent 1.5px),
+        radial-gradient(circle, #7edcff 1px, transparent 1.5px);
+    background-size: 97px 103px, 151px 137px;
+    animation-duration: 100s;
+}
+
+.stars-two {
+    opacity: 0.35;
+    background-image:
+        radial-gradient(circle, white 0.8px, transparent 1.2px);
+    background-size: 47px 83px;
+    animation-duration: 65s;
+}
+
+.stars-three {
+    opacity: 0.25;
+    background-image:
+        radial-gradient(circle, #8acfff 1px, transparent 1.4px);
+    background-size: 211px 173px;
+    animation-duration: 140s;
+}
+
+@keyframes starsMove {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(180px);
+    }
+}
+
+/* =========================================================
+   APP
+========================================================= */
+
+.app {
+    width: min(1500px, calc(100% - 40px));
+    margin: auto;
+    padding: 24px 0 50px;
+}
+
+/* =========================================================
+   TOPBAR
+========================================================= */
+
+.topbar {
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 0 22px;
+    border: 1px solid var(--border);
+    background: rgba(4, 11, 19, 0.76);
+    backdrop-filter: blur(22px);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.brand-mark {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 3px;
+    padding: 7px;
+    border: 1px solid var(--border-bright);
+    border-radius: 9px;
+    background: rgba(52, 164, 255, 0.07);
+    box-shadow: 0 0 25px rgba(52, 164, 255, 0.08);
+}
+
+.brand-mark span {
+    width: 3px;
+    border-radius: 5px;
+    background: var(--cyan);
+}
+
+.brand-mark span:nth-child(1) {
+    height: 35%;
+}
+
+.brand-mark span:nth-child(2) {
+    height: 75%;
+}
+
+.brand-mark span:nth-child(3) {
+    height: 100%;
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+    letter-spacing: 0.12em;
+}
+
+.brand-text strong {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 14px;
+}
+
+.brand-text span {
+    margin-top: 4px;
+    color: var(--blue);
+    font-size: 9px;
+    letter-spacing: 0.28em;
+}
+
+.mission-status {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--green);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 15px var(--green);
+    animation: pulse 1.7s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.45;
+        transform: scale(0.7);
+    }
+}
+
+.topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.utc-clock {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #a9bfd2;
+    font-family: monospace;
+    font-size: 11px;
+}
+
+.utc-clock small {
+    color: var(--blue);
+    font-size: 8px;
+}
+
+.icon-button {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: rgba(255,255,255,0.025);
+    color: #cfe9ff;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.icon-button:hover {
+    border-color: var(--border-bright);
+    background: rgba(55, 170, 255, 0.08);
+    transform: translateY(-2px);
+}
+
+/* =========================================================
+   MISSION HEADER
+========================================================= */
+
+.mission-header {
+    min-height: 210px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 40px;
+    padding: 70px 10px 38px;
+}
+
+.eyebrow,
+.panel-label {
+    color: var(--blue);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.24em;
+}
+
+.mission-heading h1 {
+    margin-top: 9px;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: clamp(48px, 7vw, 92px);
+    line-height: 0.9;
+    letter-spacing: -0.07em;
+}
+
+.mission-heading h1 span {
+    color: var(--blue);
+}
+
+.mission-heading p {
+    margin-top: 17px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.mission-meta {
+    display: flex;
+    gap: 38px;
+    padding-bottom: 6px;
+}
+
+.meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.meta-item span {
+    color: #536b80;
+    font-size: 8px;
+    letter-spacing: 0.18em;
+}
+
+.meta-item strong {
+    font-family: monospace;
+    font-size: 11px;
+}
+
+.green-text {
+    color: var(--green);
+}
+
+/* =========================================================
+   PANELS
+========================================================= */
+
+.panel {
+    position: relative;
+    border: 1px solid var(--border);
+    background:
+        linear-gradient(
+            145deg,
+            rgba(15, 30, 47, 0.75),
+            rgba(4, 11, 20, 0.74)
+        );
+    backdrop-filter: blur(20px);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.panel::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 20px;
+    right: 20px;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(80, 190, 255, 0.4),
+        transparent
+    );
+    opacity: 0.6;
+}
+
+.panel:hover {
+    border-color: rgba(83, 181, 255, 0.22);
+}
+
+.panel-header {
+    min-height: 78px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(100, 150, 190, 0.08);
+}
+
+.panel-header h2 {
+    margin-top: 6px;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+}
+
+.panel-code {
+    color: #60798e;
+    font-family: monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+}
+
+/* =========================================================
+   COUNTDOWN
+========================================================= */
+
+.countdown-panel {
+    border-radius: 18px;
+    margin-bottom: 15px;
+}
+
+.countdown {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(10px, 3vw, 34px);
+    padding: 32px 20px 25px;
+}
+
+.countdown-unit {
+    text-align: center;
+}
+
+.countdown-unit strong {
+    display: block;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.05em;
+    text-shadow: 0 0 30px rgba(80, 200, 255, 0.14);
+}
+
+.countdown-unit span {
+    display: block;
+    margin-top: 8px;
+    color: #597187;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+}
+
+.countdown-separator {
+    margin-top: -18px;
+    color: #36536b;
+    font-family: monospace;
+    font-size: 32px;
+}
+
+.countdown-progress {
+    padding: 0 24px 23px;
+}
+
+.progress-line {
+    height: 3px;
+    overflow: hidden;
+    border-radius: 5px;
+    background: rgba(255,255,255,0.05);
+}
+
+.progress-line span {
+    display: block;
+    width: 68.42%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #168cff, #53f4ff);
+    box-shadow: 0 0 15px rgba(60, 210, 255, 0.55);
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 9px;
+    color: #526b80;
+    font-family: monospace;
+    font-size: 8px;
+}
+
+/* =========================================================
+   TELEMETRY
+========================================================= */
+
+.telemetry-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.telemetry-card {
+    min-height: 205px;
+    padding: 21px;
+    border-radius: 16px;
+}
+
+.card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-label {
+    color: #688096;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+}
+
+.card-icon {
+    color: #3f7c9f;
+    font-size: 16px;
+}
+
+.metric {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-top: 21px;
+}
+
+.metric strong {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 36px;
+    font-weight: 500;
+    letter-spacing: -0.06em;
+}
+
+.metric span {
+    color: #5b7287;
+    font-family: monospace;
+    font-size: 9px;
+}
+
+.mini-chart {
+    height: 40px;
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    margin-top: 17px;
+}
+
+.mini-chart div {
+    flex: 1;
+    min-width: 2px;
+    border-radius: 3px 3px 0 0;
+    background: linear-gradient(to top, #166aa0, #54dfff);
+    opacity: 0.65;
+    animation: chartPulse 2.4s ease-in-out infinite alternate;
+}
+
+.mini-chart div:nth-child(2n) {
+    animation-delay: 0.3s;
+}
+
+.mini-chart div:nth-child(3n) {
+    animation-delay: 0.6s;
+}
+
+@keyframes chartPulse {
+    from {
+        opacity: 0.4;
+    }
+
+    to {
+        opacity: 0.9;
+    }
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 17px;
+    color: #536b80;
+    font-family: monospace;
+    font-size: 8px;
+}
+
+.card-footer span:first-child {
+    color: var(--green);
+}
+
+.fuel-bar {
+    height: 5px;
+    margin-top: 29px;
+    overflow: hidden;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.06);
+}
+
+.fuel-level {
+    width: 82%;
+    height: 100%;
+    background: linear-gradient(90deg, #32b982, #55f1a6);
+    box-shadow: 0 0 12px rgba(65, 240, 160, 0.45);
+    transition: width 0.7s ease;
+}
+
+.temperature-scale {
+    display: flex;
+    height: 5px;
+    gap: 3px;
+    margin-top: 28px;
+}
+
+.temperature-scale span {
+    flex: 1;
+    border-radius: 4px;
+    background: rgba(80, 150, 210, 0.12);
+}
+
+.temperature-scale span:nth-child(-n+3) {
+    background: #277cc4;
+}
+
+/* =========================================================
+   CONTROL GRID
+========================================================= */
+
+.control-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.radar-panel,
+.spacecraft-panel {
+    min-height: 520px;
+    border-radius: 18px;
+}
+
+/* =========================================================
+   RADAR
+========================================================= */
+
+.radar-container {
+    position: relative;
+    min-height: 430px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.radar {
+    position: relative;
+    width: min(390px, 72vw);
+    aspect-ratio: 1;
+    border: 1px solid rgba(67, 202, 255, 0.2);
+    border-radius: 50%;
+    background:
+        radial-gradient(
+            circle,
+            rgba(43, 164, 222, 0.07),
+            rgba(4, 25, 39, 0.16) 45%,
+            rgba(3, 8, 15, 0.7)
+        );
+    box-shadow:
+        0 0 50px rgba(25, 160, 220, 0.06),
+        inset 0 0 60px rgba(30, 160, 220, 0.04);
+}
+
+.radar-ring {
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(75, 203, 255, 0.15);
+    border-radius: 50%;
+}
+
+.ring-one {
+    inset: 15%;
+}
+
+.ring-two {
+    inset: 30%;
+}
+
+.ring-three {
+    inset: 45%;
+}
+
+.ring-four {
+    inset: 60%;
+}
+
+.radar-cross {
+    position: absolute;
+    background: rgba(81, 199, 240, 0.1);
+}
+
+.radar-cross.horizontal {
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+}
+
+.radar-cross.vertical {
+    left: 50%;
+    top: 0;
+    width: 1px;
+    height: 100%;
+}
+
+.radar-sweep {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(
+        from 0deg,
+        transparent 0deg,
+        transparent 305deg,
+        rgba(61, 227, 255, 0.02) 320deg,
+        rgba(61, 227, 255, 0.2) 350deg,
+        rgba(61, 227, 255, 0.5) 360deg
+    );
+    animation: radarSweep 4s linear infinite;
+}
+
+@keyframes radarSweep {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.radar-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--cyan);
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 18px var(--cyan);
+}
+
+.radar-target {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #68f5ff;
+    box-shadow: 0 0 15px #68f5ff;
+    animation: targetBlink 1.6s infinite;
+}
+
+.target-one {
+    top: 24%;
+    left: 68%;
+}
+
+.target-two {
+    top: 63%;
+    left: 27%;
+    animation-delay: 0.4s;
+}
+
+.target-three {
+    top: 72%;
+    left: 74%;
+    animation-delay: 0.9s;
+}
+
+.target-four {
+    top: 37%;
+    left: 35%;
+    animation-delay: 1.2s;
+}
+
+@keyframes targetBlink {
+    0%, 100% {
+        opacity: 0.3;
+        transform: scale(0.7);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.5);
+    }
+}
+
+.radar-coordinates {
+    position: absolute;
+    bottom: 17px;
+    left: 24px;
+    right: 24px;
+    display: flex;
+    justify-content: space-between;
+    color: #536e83;
+    font-family: monospace;
+    font-size: 8px;
+}
+
+/* =========================================================
+   SPACECRAFT
+========================================================= */
+
+.spacecraft-view {
+    position: relative;
+    min-height: 360px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.spacecraft-orbit {
+    position: absolute;
+    width: 230px;
+    height: 95px;
+    border: 1px solid rgba(74, 188, 255, 0.13);
+    border-radius: 50%;
+    transform: rotate(-25deg);
+}
+
+.orbit-two {
+    width: 300px;
+    height: 125px;
+    transform: rotate(55deg);
+    opacity: 0.45;
+}
+
+.spacecraft {
+    position: relative;
+    width: 190px;
+    height: 130px;
+    transform: rotate(-12deg);
+    animation: shipFloat 4s ease-in-out infinite;
+    filter: drop-shadow(0 0 22px rgba(60, 190, 255, 0.12));
+}
+
+@keyframes shipFloat {
+    0%, 100% {
+        transform: translateY(0) rotate(-12deg);
+    }
+
+    50% {
+        transform: translateY(-9px) rotate(-10deg);
+    }
+}
+
+.ship-body {
+    position: absolute;
+    top: 35px;
+    left: 45px;
+    width: 100px;
+    height: 57px;
+    border: 1px solid rgba(155, 218, 255, 0.42);
+    border-radius: 42% 48% 43% 45%;
+    background:
+        linear-gradient(
+            145deg,
+            #233d51,
+            #0c1825 65%
+        );
+    box-shadow:
+        inset 0 0 20px rgba(100, 210, 255, 0.08),
+        0 0 30px rgba(45, 170, 255, 0.08);
+}
+
+.ship-window {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    width: 21px;
+    height: 16px;
+    border: 1px solid #55dfff;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #a9f7ff, #164b6c 70%);
+    box-shadow: 0 0 12px rgba(65, 224, 255, 0.45);
+}
+
+.ship-panel {
+    position: absolute;
+    left: 22px;
+    top: 20px;
+    width: 30px;
+    height: 15px;
+    border-top: 1px solid #466d85;
+    border-bottom: 1px solid #466d85;
+}
+
+.ship-wing {
+    position: absolute;
+    top: 37px;
+    width: 53px;
+    height: 53px;
+    border: 1px solid rgba(92, 185, 235, 0.26);
+    background:
+        repeating-linear-gradient(
+            90deg,
+            rgba(77, 175, 225, 0.12) 0 1px,
+            transparent 1px 9px
+        ),
+        rgba(20, 52, 73, 0.6);
+}
+
+.wing-left {
+    left: -3px;
+    transform: skewY(-15deg);
+}
+
+.wing-right {
+    right: -3px;
+    transform: skewY(15deg);
+}
+
+.ship-engine {
+    position: absolute;
+    left: 65px;
+    bottom: 26px;
+    width: 17px;
+    height: 23px;
+    border-radius: 0 0 9px 9px;
+    background: #0b1721;
+    border: 1px solid #294a5e;
+}
+
+.engine-two {
+    left: 87px;
+}
+
+.engine-three {
+    left: 109px;
+}
+
+.ship-engine::after {
+    content: "";
+    position: absolute;
+    bottom: -16px;
+    left: 3px;
+    width: 9px;
+    height: 19px;
+    border-radius: 50%;
+    background: linear-gradient(
+        to bottom,
+        #dffcff,
+        #42dfff,
+        transparent
+    );
+    filter: blur(2px);
+    animation: enginePulse 0.45s infinite alternate;
+}
+
+@keyframes enginePulse {
+    from {
+        height: 12px;
+        opacity: 0.55;
+    }
+
+    to {
+        height: 23px;
+        opacity: 1;
+    }
+}
+
+.spacecraft-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid rgba(100, 150, 190, 0.08);
+}
+
+.spacecraft-stats div {
+    padding: 16px 20px;
+    border-right: 1px solid rgba(100, 150, 190, 0.08);
+}
+
+.spacecraft-stats div:last-child {
+    border-right: 0;
+}
+
+.spacecraft-stats span {
+    display: block;
+    color: #566f84;
+    font-size: 7px;
+    letter-spacing: 0.15em;
+}
+
+.spacecraft-stats strong {
+    display: block;
+    margin-top: 6px;
+    color: var(--cyan);
+    font-family: monospace;
+    font-size: 12px;
+}
+
+.vehicle-status,
+.live-indicator {
+    color: var(--green);
+    font-family: monospace;
+    font-size: 8px;
+}
+
+/* =========================================================
+   LOWER GRID
+========================================================= */
+
+.lower-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.objectives-panel,
+.log-panel {
+    border-radius: 18px;
+    min-height: 400px;
+}
+
+.objectives {
+    padding: 7px 24px 18px;
+}
+
+.objective {
+    display: grid;
+    grid-template-columns: 42px 1fr 30px;
+    align-items: center;
+    gap: 13px;
+    min-height: 57px;
+    border-bottom: 1px solid rgba(100, 150, 190, 0.07);
+}
+
+.objective-number {
+    color: #466176;
+    font-family: monospace;
+    font-size: 9px;
+}
+
+.objective-content strong {
+    display: block;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.03em;
+}
+
+.objective-content span {
+    display: block;
+    margin-top: 4px;
+    color: #50697d;
+    font-size: 8px;
+}
+
+.objective-status {
+    text-align: right;
+    color: #445c6e;
+    font-family: monospace;
+    font-size: 12px;
+}
+
+.objective.completed .objective-status {
+    color: var(--green);
+}
+
+.objective.active {
+    position: relative;
+}
+
+.objective.active::before {
+    content: "";
+    position: absolute;
+    left: -24px;
+    width: 2px;
+    height: 32px;
+    border-radius: 5px;
+    background: var(--blue);
+    box-shadow: 0 0 10px var(--blue);
+}
+
+.objective.active .objective-number,
+.objective.active .objective-status {
+    color: var(--blue);
+}
+
+/* =========================================================
+   SYSTEM LOG
+========================================================= */
+
+.system-log {
+    height: 305px;
+    overflow-y: auto;
+    padding: 10px 24px 20px;
+}
+
+.system-log::-webkit-scrollbar {
+    width: 3px;
+}
+
+.system-log::-webkit-scrollbar-thumb {
+    background: #24526f;
+}
+
+.log-entry {
+    display: grid;
+    grid-template-columns: 58px 34px 1fr;
+    gap: 9px;
+    align-items: baseline;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(100, 150, 190, 0.055);
+    animation: logAppear 0.4s ease;
+}
+
+@keyframes logAppear {
+    from {
+        opacity: 0;
+        transform: translateX(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.log-entry time {
+    color: #40576a;
+    font-family: monospace;
+    font-size: 8px;
+}
+
+.log-type {
+    font-family: monospace;
+    font-size: 7px;
+    font-weight: 800;
+}
+
+.log-type.success {
+    color: var(--green);
+}
+
+.log-type.info {
+    color: var(--blue);
+}
+
+.log-type.warning {
+    color: var(--yellow);
+}
+
+.log-entry p {
+    color: #72889b;
+    font-size: 9px;
+}
+
+/* =========================================================
+   COMMAND CENTER
+========================================================= */
+
+.command-panel {
+    border-radius: 18px;
+    margin-bottom: 25px;
+}
+
+.command-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    padding: 20px 24px 24px;
+}
+
+.command-button {
+    position: relative;
+    min-height: 78px;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 15px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: rgba(255,255,255,0.02);
+    color: var(--text);
+    text-align: left;
+    cursor: pointer;
+    transition:
+        transform 0.25s,
+        border-color 0.25s,
+        background 0.25s;
+}
+
+.command-button::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        100deg,
+        transparent,
+        rgba(76, 192, 255, 0.07),
+        transparent
+    );
+    transform: translateX(-100%);
+    transition: transform 0.5s;
+}
+
+.command-button:hover {
+    transform: translateY(-3px);
+    border-color: var(--border-bright);
+    background: rgba(45, 150, 220, 0.07);
+}
+
+.command-button:hover::before {
+    transform: translateX(100%);
+}
+
+.command-icon {
+    width: 35px;
+    height: 35px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(75, 190, 255, 0.2);
+    border-radius: 9px;
+    color: var(--cyan);
+    background: rgba(60, 190, 255, 0.04);
+}
+
+.command-text {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.command-text strong {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 10px;
+}
+
+.command-text small {
+    color: #536b7f;
+    font-size: 8px;
+}
+
+.command-arrow {
+    margin-left: auto;
+    color: #3d667e;
+    transition: 0.25s;
+}
+
+.command-button:hover .command-arrow {
+    color: var(--cyan);
+    transform: translateX(3px);
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 0 7px;
+    color: #405568;
+    font-family: monospace;
+    font-size: 8px;
+    letter-spacing: 0.08em;
+}
+
+.footer > div {
+    display: flex;
+    gap: 8px;
+}
+
+.footer-brand {
+    color: #60788c;
+}
+
+/* =========================================================
+   ALERT
+========================================================= */
+
+.alert-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background: rgba(1, 5, 10, 0.72);
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.25s;
+}
+
+.alert-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.alert-box {
+    width: min(420px, 100%);
+    padding: 32px;
+    border: 1px solid rgba(76, 190, 255, 0.25);
+    border-radius: 18px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(12, 31, 49, 0.97),
+            rgba(4, 11, 20, 0.98)
+        );
+    box-shadow: 0 30px 100px rgba(0,0,0,0.7);
+    text-align: center;
+    transform: translateY(15px) scale(0.98);
+    transition: 0.25s;
+}
+
+.alert-overlay.active .alert-box {
+    transform: translateY(0) scale(1);
+}
+
+.alert-icon {
+    width: 45px;
+    height: 45px;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 17px;
+    border: 1px solid rgba(80, 220, 255, 0.3);
+    border-radius: 50%;
+    color: var(--cyan);
+    font-weight: 800;
+    box-shadow: 0 0 25px rgba(60, 200, 255, 0.12);
+}
+
+.alert-box h2 {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 18px;
+}
+
+.alert-box p {
+    margin: 10px 0 23px;
+    color: #6f879a;
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+.alert-box button {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid rgba(77, 190, 255, 0.25);
+    border-radius: 8px;
+    background: rgba(45, 170, 230, 0.08);
+    color: var(--cyan);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.alert-box button:hover {
+    background: rgba(45, 170, 230, 0.17);
+}
+
+/* =========================================================
+   MOUSE GLOW
+========================================================= */
+
+.mouse-glow {
+    position: fixed;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: -1;
+    background: radial-gradient(
+        circle,
+        rgba(44, 178, 255, 0.055),
+        transparent 68%
+    );
+    transform: translate(-50%, -50%);
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1050px) {
+
+    .telemetry-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .control-grid,
+    .lower-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .mission-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .mission-meta {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+@media (max-width: 700px) {
+
+    .app {
+        width: min(100% - 20px, 1500px);
+        padding-top: 10px;
+    }
+
+    .topbar {
+        height: auto;
+        min-height: 65px;
+        padding: 13px 15px;
+    }
+
+    .mission-status {
+        display: none;
+    }
+
+    .utc-clock {
+        display: none;
+    }
+
+    .mission-header {
+        padding: 48px 6px 28px;
+    }
+
+    .mission-heading h1 {
+        font-size: 55px;
+    }
+
+    .mission-meta {
+        gap: 18px;
+    }
+
+    .meta-item strong {
+        font-size: 9px;
+    }
+
+    .telemetry-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .telemetry-card {
+        min-height: 175px;
+        padding: 16px;
+    }
+
+    .metric strong {
+        font-size: 28px;
+    }
+
+    .metric span {
+        font-size: 8px;
+    }
+
+    .countdown {
+        gap: 7px;
+        padding: 27px 10px 22px;
+    }
+
+    .countdown-unit strong {
+        font-size: 34px;
+    }
+
+    .countdown-separator {
+        font-size: 20px;
+    }
+
+    .panel-header {
+        padding: 17px;
+    }
+
+    .radar-panel,
+    .spacecraft-panel {
+        min-height: 450px;
+    }
+
+    .radar-container {
+        min-height: 360px;
+    }
+
+    .command-buttons {
+        grid-template-columns: 1fr;
+        padding: 15px;
+    }
+
+    .footer {
+        flex-direction: column;
+        padding-bottom: 20px;
+    }
+
+    .footer > div {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 430px) {
+
+    .brand-text strong {
+        font-size: 11px;
+    }
+
+    .brand-text span {
+        font-size: 7px;
+    }
+
+    .mission-heading h1 {
+        font-size: 46px;
+    }
+
+    .mission-meta {
+        gap: 12px;
+    }
+
+    .telemetry-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .countdown-unit strong {
+        font-size: 28px;
+    }
+
+    .countdown-unit span {
+        font-size: 6px;
+    }
+
+    .countdown-separator {
+        font-size: 17px;
+    }
+
+    .spacecraft {
+        transform: scale(0.85) rotate(-12deg);
+    }
+
+    .spacecraft-stats div {
+        padding: 13px 10px;
+    }
+}
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="background">
+    <div class="stars stars-one"></div>
+    <div class="stars stars-two"></div>
+    <div class="stars stars-three"></div>
+
+    <div class="background-glow glow-one"></div>
+    <div class="background-glow glow-two"></div>
+
+    <div class="grid-background"></div>
+</div>
+
+<div class="mouse-glow" id="mouseGlow"></div>
+
+<main class="app">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+
+        <div class="brand">
+
+            <div class="brand-mark">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <div class="brand-text">
+                <strong>MISSION</strong>
+                <span>CONTROL</span>
+            </div>
+
+        </div>
+
+        <div class="mission-status">
+            <span class="status-dot"></span>
+            <span>SYSTEM OPERATIONAL</span>
+        </div>
+
+        <div class="topbar-actions">
+
+            <div class="utc-clock">
+                <span id="currentDate">--/--/----</span>
+                <span id="currentTime">--:--:--</span>
+                <small>LOCAL</small>
+            </div>
+
+            <button
+                class="icon-button"
+                id="fullscreenButton"
+                title="Fullscreen"
+            >
+                ⛶
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- MISSION HEADER -->
+    <section class="mission-header">
+
+        <div class="mission-heading">
+
+            <div class="eyebrow">
+                DEEP SPACE NETWORK // 04
+            </div>
+
+            <h1>
+                LUNAR<span>-01</span>
+            </h1>
+
+            <p>
+                Autonomous lunar reconnaissance mission
+            </p>
+
+        </div>
+
+        <div class="mission-meta">
+
+            <div class="meta-item">
+                <span>MISSION</span>
+                <strong>LUNAR-01</strong>
+            </div>
+
+            <div class="meta-item">
+                <span>VEHICLE</span>
+                <strong>ODYSSEY-X</strong>
+            </div>
+
+            <div class="meta-item">
+                <span>STATUS</span>
+                <strong class="green-text">NOMINAL</strong>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- COUNTDOWN -->
+    <section class="countdown-panel panel">
+
+        <div class="panel-header">
+
+            <div>
+                <span class="panel-label">NEXT EVENT</span>
+                <h2>LUNAR INSERTION</h2>
+            </div>
+
+            <span class="panel-code">EVT-042</span>
+
+        </div>
+
+        <div class="countdown">
+
+            <div class="countdown-unit">
+                <strong id="days">00</strong>
+                <span>DAYS</span>
+            </div>
+
+            <div class="countdown-separator">:</div>
+
+            <div class="countdown-unit">
+                <strong id="hours">01</strong>
+                <span>HOURS</span>
+            </div>
+
+            <div class="countdown-separator">:</div>
+
+            <div class="countdown-unit">
+                <strong id="minutes">00</strong>
+                <span>MIN</span>
+            </div>
+
+            <div class="countdown-separator">:</div>
+
+            <div class="countdown-unit">
+                <strong id="seconds">00</strong>
+                <span>SEC</span>
+            </div>
+
+        </div>
+
+        <div class="countdown-progress">
+
+            <div class="progress-line">
+                <span id="progressBar"></span>
+            </div>
+
+            <div class="progress-info">
+                <span>MISSION TIMELINE</span>
+                <span id="missionPercent">68.42%</span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- TELEMETRY -->
+    <section class="telemetry-grid">
+
+        <article class="telemetry-card panel">
+
+            <div class="card-top">
+                <span class="card-label">ALTITUDE</span>
+                <span class="card-icon">↑</span>
+            </div>
+
+            <div class="metric">
+                <strong id="altitude">384,291</strong>
+                <span>KM</span>
+            </div>
+
+            <div class="mini-chart">
+                <div style="height:32%"></div>
+                <div style="height:38%"></div>
+                <div style="height:35%"></div>
+                <div style="height:48%"></div>
+                <div style="height:44%"></div>
+                <div style="height:59%"></div>
+                <div style="height:54%"></div>
+                <div style="height:67%"></div>
+                <div style="height:62%"></div>
+                <div style="height:76%"></div>
+                <div style="height:72%"></div>
+                <div style="height:83%"></div>
+            </div>
+
+            <div class="card-footer">
+                <span id="altitudeChange">+0.42%</span>
+                <span>LIVE</span>
+            </div>
+
+        </article>
+
+
+        <article class="telemetry-card panel">
+
+            <div class="card-top">
+                <span class="card-label">VELOCITY</span>
+                <span class="card-icon">→</span>
+            </div>
+
+            <div class="metric">
+                <strong id="speed">27,450</strong>
+                <span>KM/H</span>
+            </div>
+
+            <div class="mini-chart">
+                <div style="height:41%"></div>
+                <div style="height:48%"></div>
+                <div style="height:44%"></div>
+                <div style="height:62%"></div>
+                <div style="height:58%"></div>
+                <div style="height:71%"></div>
+                <div style="height:64%"></div>
+                <div style="height:78%"></div>
+                <div style="height:73%"></div>
+                <div style="height:86%"></div>
+                <div style="height:80%"></div>
+                <div style="height:92%"></div>
+            </div>
+
+            <div class="card-footer">
+                <span id="speedChange">+128 KM/H</span>
+                <span>NOMINAL</span>
+            </div>
+
+        </article>
+
+
+        <article class="telemetry-card panel">
+
+            <div class="card-top">
+                <span class="card-label">FUEL</span>
+                <span class="card-icon">◈</span>
+            </div>
+
+            <div class="metric">
+                <strong id="fuel">82</strong>
+                <span>%</span>
+            </div>
+
+            <div class="fuel-bar">
+                <div class="fuel-level" id="fuelLevel"></div>
+            </div>
+
+            <div class="card-footer">
+                <span id="fuelKg">1,284 KG</span>
+                <span>STABLE</span>
+            </div>
+
+        </article>
+
+
+        <article class="telemetry-card panel">
+
+            <div class="card-top">
+                <span class="card-label">EXTERNAL TEMP</span>
+                <span class="card-icon">◌</span>
+            </div>
+
+            <div class="metric">
+                <strong id="temperature">-64</strong>
+                <span>°C</span>
+            </div>
+
+            <div class="temperature-scale">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <div class="card-footer">
+                <span id="tempChange">-2.4°C</span>
+                <span>COLD</span>
+            </div>
+
+        </article>
+
+    </section>
+
+
+    <!-- RADAR + SPACECRAFT -->
+    <section class="control-grid">
+
+        <article class="radar-panel panel">
+
+            <div class="panel-header">
+
+                <div>
+                    <span class="panel-label">NAVIGATION</span>
+                    <h2>DEEP SPACE RADAR</h2>
+                </div>
+
+                <span class="live-indicator">● LIVE</span>
+
+            </div>
+
+            <div class="radar-container">
+
+                <div class="radar">
+
+                    <div class="radar-ring ring-one"></div>
+                    <div class="radar-ring ring-two"></div>
+                    <div class="radar-ring ring-three"></div>
+                    <div class="radar-ring ring-four"></div>
+
+                    <div class="radar-cross horizontal"></div>
+                    <div class="radar-cross vertical"></div>
+
+                    <div class="radar-sweep"></div>
+
+                    <div class="radar-center"></div>
+
+                    <div class="radar-target target-one"></div>
+                    <div class="radar-target target-two"></div>
+                    <div class="radar-target target-three"></div>
+                    <div class="radar-target target-four"></div>
+
+                </div>
+
+                <div class="radar-coordinates">
+                    <span id="coordA">00° 14' 22.8" N</span>
+                    <span id="coordB">104° 38' 11.2" E</span>
+                </div>
+
+            </div>
+
+        </article>
+
+
+        <article class="spacecraft-panel panel">
+
+            <div class="panel-header">
+
+                <div>
+                    <span class="panel-label">VEHICLE</span>
+                    <h2>ODYSSEY-X</h2>
+                </div>
+
+                <span class="vehicle-status">ACTIVE</span>
+
+            </div>
+
+            <div class="spacecraft-view">
+
+                <div class="spacecraft-orbit orbit-one"></div>
+                <div class="spacecraft-orbit orbit-two"></div>
+
+                <div class="spacecraft">
+
+                    <div class="ship-body">
+                        <div class="ship-window"></div>
+                        <div class="ship-panel"></div>
+                    </div>
+
+                    <div class="ship-wing wing-left"></div>
+                    <div class="ship-wing wing-right"></div>
+
+                    <div class="ship-engine engine-one"></div>
+                    <div class="ship-engine engine-two"></div>
+                    <div class="ship-engine engine-three"></div>
+
+                </div>
+
+            </div>
+
+            <div class="spacecraft-stats">
+
+                <div>
+                    <span>POWER</span>
+                    <strong id="power">98.7%</strong>
+                </div>
+
+                <div>
+                    <span>SIGNAL</span>
+                    <strong id="signal">99.2%</strong>
+                </div>
+
+                <div>
+                    <span>SYSTEMS</span>
+                    <strong>24/24</strong>
+                </div>
+
+            </div>
+
+        </article>
+
+    </section>
+
+
+    <!-- OBJECTIVES + LOG -->
+    <section class="lower-grid">
+
+        <article class="objectives-panel panel">
+
+            <div class="panel-header">
+
+                <div>
+                    <span class="panel-label">MISSION PROTOCOL</span>
+                    <h2>OBJECTIVES</h2>
+                </div>
+
+                <span class="panel-code">04 / 06</span>
+
+            </div>
+
+            <div class="objectives">
+
+                <div class="objective completed">
+                    <div class="objective-number">01</div>
+                    <div class="objective-content">
+                        <strong>EARTH ORBIT</strong>
+                        <span>Completed successfully</span>
+                    </div>
+                    <div class="objective-status">✓</div>
+                </div>
+
+                <div class="objective completed">
+                    <div class="objective-number">02</div>
+                    <div class="objective-content">
+                        <strong>TRANS-LUNAR INJECTION</strong>
+                        <span>Completed successfully</span>
+                    </div>
+                    <div class="objective-status">✓</div>
+                </div>
+
+                <div class="objective completed">
+                    <div class="objective-number">03</div>
+                    <div class="objective-content">
+                        <strong>DEEP SPACE CRUISE</strong>
+                        <span>Completed successfully</span>
+                    </div>
+                    <div class="objective-status">✓</div>
+                </div>
+
+                <div class="objective active">
+                    <div class="objective-number">04</div>
+                    <div class="objective-content">
+                        <strong>LUNAR INSERTION</strong>
+                        <span>In progress</span>
+                    </div>
+                    <div class="objective-status">→</div>
+                </div>
+
+                <div class="objective">
+                    <div class="objective-number">05</div>
+                    <div class="objective-content">
+                        <strong>ORBITAL SURVEY</strong>
+                        <span>Pending</span>
+                    </div>
+                    <div class="objective-status">—</div>
+                </div>
+
+                <div class="objective">
+                    <div class="objective-number">06</div>
+                    <div class="objective-content">
+                        <strong>RETURN TRAJECTORY</strong>
+                        <span>Pending</span>
+                    </div>
+                    <div class="objective-status">—</div>
+                </div>
+
+            </div>
+
+        </article>
+
+
+        <article class="log-panel panel">
+
+            <div class="panel-header">
+
+                <div>
+                    <span class="panel-label">FLIGHT COMPUTER</span>
+                    <h2>SYSTEM LOG</h2>
+                </div>
+
+                <span class="panel-code">LIVE</span>
+
+            </div>
+
+            <div class="system-log" id="systemLog">
+
+                <div class="log-entry">
+                    <time>03:41:28</time>
+                    <span class="log-type success">OK</span>
+                    <p>Navigation system synchronized</p>
+                </div>
+
+                <div class="log-entry">
+                    <time>03:41:16</time>
+                    <span class="log-type info">INF</span>
+                    <p>Telemetry packet received</p>
+                </div>
+
+                <div class="log-entry">
+                    <time>03:40:59</time>
+                    <span class="log-type success">OK</span>
+                    <p>Propulsion system nominal</p>
+                </div>
+
+                <div class="log-entry">
+                    <time>03:40:41</time>
+                    <span class="log-type warning">WRN</span>
+                    <p>External temperature below threshold</p>
+                </div>
+
+                <div class="log-entry">
+                    <time>03:40:22</time>
+                    <span class="log-type info">INF</span>
+                    <p>Deep space antenna aligned</p>
+                </div>
+
+                <div class="log-entry">
+                    <time>03:39:48</time>
+                    <span class="log-type success">OK</span>
+                    <p>Guidance computer online</p>
+                </div>
+
+            </div>
+
+        </article>
+
+    </section>
+
+
+    <!-- COMMAND CENTER -->
+    <section class="command-panel panel">
+
+        <div class="panel-header">
+
+            <div>
+                <span class="panel-label">COMMAND CENTER</span>
+                <h2>MISSION CONTROLS</h2>
+            </div>
+
+            <span class="panel-code">SECURE</span>
+
+        </div>
+
+        <div class="command-buttons">
+
+            <button class="command-button" data-command="systems">
+
+                <span class="command-icon">◈</span>
+
+                <span class="command-text">
+                    <strong>SYSTEMS</strong>
+                    <small>Vehicle diagnostics</small>
+                </span>
+
+                <span class="command-arrow">→</span>
+
+            </button>
+
+
+            <button class="command-button" data-command="telemetry">
+
+                <span class="command-icon">◫</span>
+
+                <span class="command-text">
+                    <strong>TELEMETRY</strong>
+                    <small>Live data stream</small>
+                </span>
+
+                <span class="command-arrow">→</span>
+
+            </button>
+
+
+            <button class="command-button" data-command="logs">
+
+                <span class="command-icon">≡</span>
+
+                <span class="command-text">
+                    <strong>FLIGHT LOG</strong>
+                    <small>Mission events</small>
+                </span>
+
+                <span class="command-arrow">→</span>
+
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer class="footer">
+
+        <div>
+            <span class="footer-brand">MISSION CONTROL</span>
+            <span>// LUNAR-01</span>
+        </div>
+
+        <div>
+            <span>DEEP SPACE NETWORK</span>
+            <span>•</span>
+            <span>ALL SYSTEMS NOMINAL</span>
+        </div>
+
+        <div>
+            <span>© 2026</span>
+        </div>
+
+    </footer>
+
+</main>
+
+
+<!-- ALERT -->
+<div class="alert-overlay" id="alertOverlay">
+
+    <div class="alert-box">
+
+        <div class="alert-icon">!</div>
+
+        <h2 id="alertTitle">
+            SYSTEM MESSAGE
+        </h2>
+
+        <p id="alertMessage">
+            System information.
+        </p>
+
+        <button id="closeAlert">
+            ACKNOWLEDGE
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+"use strict";
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const currentDate =
+    document.getElementById("currentDate");
+
+const currentTime =
+    document.getElementById("currentTime");
+
+const altitudeElement =
+    document.getElementById("altitude");
+
+const speedElement =
+    document.getElementById("speed");
+
+const fuelElement =
+    document.getElementById("fuel");
+
+const fuelLevel =
+    document.getElementById("fuelLevel");
+
+const temperatureElement =
+    document.getElementById("temperature");
+
+const powerElement =
+    document.getElementById("power");
+
+const signalElement =
+    document.getElementById("signal");
+
+const systemLog =
+    document.getElementById("systemLog");
+
+const mouseGlow =
+    document.getElementById("mouseGlow");
+
+const alertOverlay =
+    document.getElementById("alertOverlay");
+
+const alertTitle =
+    document.getElementById("alertTitle");
+
+const alertMessage =
+    document.getElementById("alertMessage");
+
+const closeAlert =
+    document.getElementById("closeAlert");
+
+const fullscreenButton =
+    document.getElementById("fullscreenButton");
+
+
+/* =========================================================
+   CLOCK - ORA LOCALE DEL DISPOSITIVO
+========================================================= */
+
+function updateClock() {
+
+    const now = new Date();
+
+    const day =
+        String(now.getDate()).padStart(2, "0");
+
+    const month =
+        String(now.getMonth() + 1).padStart(2, "0");
+
+    const year =
+        now.getFullYear();
+
+    const hours =
+        String(now.getHours()).padStart(2, "0");
+
+    const minutes =
+        String(now.getMinutes()).padStart(2, "0");
+
+    const seconds =
+        String(now.getSeconds()).padStart(2, "0");
+
+    currentDate.textContent =
+        `${day}/${month}/${year}`;
+
+    currentTime.textContent =
+        `${hours}:${minutes}:${seconds}`;
+}
+
+updateClock();
+
+setInterval(updateClock, 1000);
+
+
+/* =========================================================
+   COUNTDOWN - 1 ORA
+========================================================= */
+
+let missionTime = 60 * 60;
+
+function updateCountdown() {
+
+    if (missionTime <= 0) {
+        missionTime = 0;
+    }
+
+    const days =
+        Math.floor(
+            missionTime / 86400
+        );
+
+    const hours =
+        Math.floor(
+            (missionTime % 86400) / 3600
+        );
+
+    const minutes =
+        Math.floor(
+            (missionTime % 3600) / 60
+        );
+
+    const seconds =
+        missionTime % 60;
+
+    document.getElementById("days")
+        .textContent =
+        String(days).padStart(2, "0");
+
+    document.getElementById("hours")
+        .textContent =
+        String(hours).padStart(2, "0");
+
+    document.getElementById("minutes")
+        .textContent =
+        String(minutes).padStart(2, "0");
+
+    document.getElementById("seconds")
+        .textContent =
+        String(seconds).padStart(2, "0");
+
+    if (missionTime > 0) {
+        missionTime--;
+    }
+}
+
+updateCountdown();
+
+setInterval(updateCountdown, 1000);
+
+
+/* =========================================================
+   TELEMETRY STATE
+========================================================= */
+
+let altitude = 384291;
+let speed = 27450;
+let fuel = 82;
+let temperature = -64;
+let power = 98.7;
+let signal = 99.2;
+
+
+/* =========================================================
+   RANDOM
+========================================================= */
+
+function randomBetween(min, max) {
+
+    return Math.random() *
+        (max - min) +
+        min;
+}
+
+
+/* =========================================================
+   TELEMETRY UPDATE
+========================================================= */
+
+function updateTelemetry() {
+
+    altitude +=
+        randomBetween(0.1, 1.7);
+
+    speed +=
+        randomBetween(-8, 18);
+
+    fuel -=
+        randomBetween(0.001, 0.009);
+
+    temperature +=
+        randomBetween(-0.5, 0.5);
+
+    power +=
+        randomBetween(-0.05, 0.05);
+
+    signal +=
+        randomBetween(-0.04, 0.04);
+
+
+    altitudeElement.textContent =
+        Math.round(altitude)
+            .toLocaleString("en-US");
+
+
+    speedElement.textContent =
+        Math.round(speed)
+            .toLocaleString("en-US");
+
+
+    fuel =
+        Math.max(
+            0,
+            Math.min(100, fuel)
+        );
+
+
+    temperature =
+        Math.round(temperature);
+
+
+    power =
+        Math.max(
+            95,
+            Math.min(100, power)
+        );
+
+
+    signal =
+        Math.max(
+            95,
+            Math.min(100, signal)
+        );
+
+
+    fuelElement.textContent =
+        Math.round(fuel);
+
+
+    fuelLevel.style.width =
+        fuel + "%";
+
+
+    temperatureElement.textContent =
+        temperature;
+
+
+    powerElement.textContent =
+        power.toFixed(1) + "%";
+
+
+    signalElement.textContent =
+        signal.toFixed(1) + "%";
+
+
+    const fuelKg =
+        Math.round(
+            1565 * (fuel / 100)
+        );
+
+    document.getElementById("fuelKg")
+        .textContent =
+        fuelKg.toLocaleString("en-US") +
+        " KG";
+}
+
+setInterval(updateTelemetry, 1400);
+
+
+/* =========================================================
+   MISSION PROGRESS
+========================================================= */
+
+let missionProgress = 68.42;
+
+function updateMissionProgress() {
+
+    missionProgress += 0.001;
+
+    if (missionProgress >= 99.9) {
+        missionProgress = 68.42;
+    }
+
+    document.getElementById(
+        "progressBar"
+    ).style.width =
+        missionProgress + "%";
+
+    document.getElementById(
+        "missionPercent"
+    ).textContent =
+        missionProgress.toFixed(2) + "%";
+}
+
+setInterval(updateMissionProgress, 1000);
+
+
+/* =========================================================
+   SYSTEM LOG
+========================================================= */
+
+const logMessages = [
+    {
+        type: "OK",
+        className: "success",
+        text: "Telemetry synchronization complete"
+    },
+    {
+        type: "INF",
+        className: "info",
+        text: "Navigation vector recalculated"
+    },
+    {
+        type: "OK",
+        className: "success",
+        text: "Deep space antenna tracking"
+    },
+    {
+        type: "INF",
+        className: "info",
+        text: "Receiving signal from Odyssey-X"
+    },
+    {
+        type: "OK",
+        className: "success",
+        text: "Guidance computer nominal"
+    },
+    {
+        type: "WRN",
+        className: "warning",
+        text: "Solar radiation slightly elevated"
+    },
+    {
+        type: "OK",
+        className: "success",
+        text: "Power distribution stable"
+    },
+    {
+        type: "INF",
+        className: "info",
+        text: "Mission clock synchronized"
+    }
+];
+
+
+/* =========================================================
+   LOG TIME - ORA LOCALE
+========================================================= */
+
+function getCurrentTime() {
+
+    const now = new Date();
+
+    return (
+        String(now.getHours())
+            .padStart(2, "0") +
+        ":" +
+        String(now.getMinutes())
+            .padStart(2, "0") +
+        ":" +
+        String(now.getSeconds())
+            .padStart(2, "0")
+    );
+}
+
+
+function addLog() {
+
+    const randomIndex =
+        Math.floor(
+            Math.random() *
+            logMessages.length
+        );
+
+    const message =
+        logMessages[randomIndex];
+
+    const entry =
+        document.createElement("div");
+
+    entry.className =
+        "log-entry";
+
+    entry.innerHTML = `
+        <time>${getCurrentTime()}</time>
+        <span class="log-type ${message.className}">
+            ${message.type}
+        </span>
+        <p>${message.text}</p>
+    `;
+
+    systemLog.prepend(entry);
+
+    const entries =
+        systemLog.querySelectorAll(
+            ".log-entry"
+        );
+
+    if (entries.length > 10) {
+        entries[entries.length - 1].remove();
+    }
+}
+
+setInterval(addLog, 5200);
+
+
+/* =========================================================
+   COMMAND ALERTS
+========================================================= */
+
+function showAlert(title, message) {
+
+    alertTitle.textContent =
+        title;
+
+    alertMessage.textContent =
+        message;
+
+    alertOverlay.classList.add(
+        "active"
+    );
+}
+
+
+function hideAlert() {
+
+    alertOverlay.classList.remove(
+        "active"
+    );
+}
+
+
+closeAlert.addEventListener(
+    "click",
+    hideAlert
+);
+
+
+alertOverlay.addEventListener(
+    "click",
+    event => {
+
+        if (
+            event.target ===
+            alertOverlay
+        ) {
+            hideAlert();
+        }
+    }
+);
+
+
+/* =========================================================
+   COMMAND BUTTONS
+========================================================= */
+
+const commandButtons =
+    document.querySelectorAll(
+        ".command-button"
+    );
+
+
+commandButtons.forEach(button => {
+
+    button.addEventListener(
+        "click",
+        () => {
+
+            const command =
+                button.dataset.command;
+
+            if (command === "systems") {
+
+                showAlert(
+                    "SYSTEMS",
+                    "All 24 spacecraft systems are operating within nominal parameters. No critical anomalies detected."
+                );
+
+            }
+
+            if (command === "telemetry") {
+
+                showAlert(
+                    "TELEMETRY",
+                    "Live telemetry stream active. Signal strength: " +
+                    signal.toFixed(1) +
+                    "%. Data link nominal."
+                );
+
+            }
+
+            if (command === "logs") {
+
+                showAlert(
+                    "FLIGHT LOG",
+                    "Flight computer has recorded all mission events. Latest event: telemetry synchronization complete."
+                );
+
+            }
+
+        }
+    );
+
+});
+
+
+/* =========================================================
+   FULLSCREEN
+========================================================= */
+
+fullscreenButton.addEventListener(
+    "click",
+    async () => {
+
+        try {
+
+            if (!document.fullscreenElement) {
+
+                await document.documentElement
+                    .requestFullscreen();
+
+                fullscreenButton.textContent =
+                    "×";
+
+            } else {
+
+                await document.exitFullscreen();
+
+                fullscreenButton.textContent =
+                    "⛶";
+            }
+
+        } catch (error) {
+
+            showAlert(
+                "FULLSCREEN",
+                "Fullscreen mode is not available on this device or browser."
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   MOUSE GLOW
+========================================================= */
+
+document.addEventListener(
+    "mousemove",
+    event => {
+
+        mouseGlow.style.left =
+            event.clientX + "px";
+
+        mouseGlow.style.top =
+            event.clientY + "px";
+    }
+);
+
+
+/* =========================================================
+   TOUCH EFFECT
+========================================================= */
+
+document.addEventListener(
+    "touchmove",
+    event => {
+
+        const touch =
+            event.touches[0];
+
+        if (!touch) return;
+
+        mouseGlow.style.left =
+            touch.clientX + "px";
+
+        mouseGlow.style.top =
+            touch.clientY + "px";
+
+    },
+    {
+        passive: true
+    }
+);
+
+
+/* =========================================================
+   RADAR TARGET MOVEMENT
+========================================================= */
+
+const targets =
+    document.querySelectorAll(
+        ".radar-target"
+    );
+
+
+targets.forEach(
+    (target, index) => {
+
+        setInterval(
+            () => {
+
+                const x =
+                    15 +
+                    Math.random() * 70;
+
+                const y =
+                    15 +
+                    Math.random() * 70;
+
+                target.style.left =
+                    x + "%";
+
+                target.style.top =
+                    y + "%";
+
+            },
+            3000 +
+            index * 900
+        );
+
+    }
+);
+
+
+/* =========================================================
+   COORDINATE SIMULATION
+========================================================= */
+
+let coordinateA = 14.8;
+let coordinateB = 104.6;
+
+
+function updateCoordinates() {
+
+    coordinateA +=
+        randomBetween(-0.02, 0.02);
+
+    coordinateB +=
+        randomBetween(-0.02, 0.02);
+
+
+    document.getElementById(
+        "coordA"
+    ).textContent =
+        "00° " +
+        coordinateA.toFixed(1) +
+        "' 22.8\" N";
+
+
+    document.getElementById(
+        "coordB"
+    ).textContent =
+        "104° " +
+        coordinateB.toFixed(1) +
+        "' 11.2\" E";
+}
+
+setInterval(
+    updateCoordinates,
+    2500
+);
+
+
+/* =========================================================
+   KEYBOARD SHORTCUTS
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key.toLowerCase() ===
+            "f"
+        ) {
+            fullscreenButton.click();
+        }
+
+        if (
+            event.key ===
+            "Escape"
+        ) {
+            hideAlert();
+        }
+
+    }
+);
+
+
+/* =========================================================
+   INITIAL SYSTEM MESSAGE
+========================================================= */
+
+setTimeout(
+    () => {
+
+        addLog();
+
+    },
+    1500
+);
+
+
+/* =========================================================
+   CONSOLE
+========================================================= */
+
+console.log(
+    "%c LUNAR-01 MISSION CONTROL ",
+    "background:#071c2d;color:#53eaff;font-weight:bold;padding:8px;"
+);
+
+console.log(
+    "Flight computer initialized."
+);
+
+console.log(
+    "All systems nominal."
+);
+
+</script>
+
+</body>
+</html>
