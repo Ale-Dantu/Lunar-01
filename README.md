@@ -42,7 +42,7 @@ L'obiettivo del progetto è puramente estetico/dimostrativo: un esercizio di UI 
 > 💡 Consiglio: aggiungi qui uno o più screenshot/GIF della dashboard in azione.
 >
 > ```markdown
-> ![Anteprima Lunar-01](docs/preview.png)
+> ![Anteprima Lunar-01](docs/Screenshot_20260819_002026_Chrome.png)
 > ```
 
 ## ✨ Funzionalità
