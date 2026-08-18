@@ -167,7 +167,7 @@ Per bug o suggerimenti, apri pure una [issue](https://github.com/Ale-Dantu/Lunar
 GitHub: [@Ale-Dantu](https://github.com/Ale-Dantu)
 
 **Francex**
-Github: [@Francex]()
+Github: [@Francex](https://github.com/RonyxDumb)
 ---
 
 <div align="center">
